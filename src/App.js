@@ -1,7 +1,7 @@
 
 function App() {
   return (
-    <h1 className="xm:bg-blue-500 ">hello</h1>
+    <h1 className="sm:bg-yellow-600">hello</h1>
   );
 }
 
