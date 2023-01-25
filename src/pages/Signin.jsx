@@ -2,6 +2,7 @@ import React from 'react'
 import { useState } from "react";
 import { AiFillEyeInvisible,AiFillEye } from "react-icons/ai";
 import { Link } from 'react-router-dom';
+import Button from '../components/Button';
 
 export default function Singin() {
   const [showPassword,setshowPassword]=useState(false)
@@ -11,7 +12,7 @@ export default function Singin() {
         <h1 className='text-3xl font-bold text-center py-6'>Signin</h1>
         <div className='flex flex-wrap'>
           <div className='lg:w-[40%] md:w-[67%] mx-4 md:m-auto'>
-            <img src='https://images.unsplash.com/flagged/photo-1564767609342-620cb19b2357'
+            <img src='https://images.unsplash.com/flagged/photo-1564767609342-620cb19b2357' alt='no no nhi dikhayege image ko'
             className='w-full rounded-2xl'
 
             />
@@ -27,7 +28,7 @@ export default function Singin() {
             <div className=' my-6 relative'>
               <input type={showPassword? 'text':'password'}
               className='focus:border-blue-300 focus:outline-none mt-7 rounded-[12px] 
-              py-6 px-6 border-2 w-full rounded-md h-8' 
+              py-6 px-6 w-full rounded-md h-8' 
               placeholder='Password'
               />
               {showPassword?(
@@ -42,17 +43,19 @@ export default function Singin() {
     
             </div>
             <div className='flex justify-between'>
-              <p>Dont have a account/<Link className='font-semibold test-blue-500'>Register</Link></p>
-              <p>Forgot password</p>
+              <p>Dont have a account/<Link to='/Signup' className='font-semibold test-blue-500'>Register</Link></p>
+              <Link to='/forgot-Passoword'> Forgot password</Link>
+
             </div>
-            <div>
-              <button className='uppercase bg-blue-500 text-white w-full my-5 py-2'>SIGN-IN</button>
-            </div>
+            <Button title= "Signin" back='bg-blue-500'/>
+           
+            
             <div className='flex items-center before:border-t before:flex-1 before:border-gray-500
             after:border-t after:flex-1 after:border-gray-500'>
               <p className='font-bold mx-3'>or</p>
             </div>
-            <button className='uppercase bg-red-500 text-white w-full my-5 py-2'>Continue with google</button>
+           <Button title='continue with google' back=' bg-red-500' pic='fcgoogle'/>
+
             </form>
 
           </div>

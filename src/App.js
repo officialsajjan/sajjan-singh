@@ -12,7 +12,7 @@ function App() {
       <Header></Header>
       <Routes>
         <Route path="/" element={<Home />}/>
-        <Route path="ForgotPassoword" element={<ForgotPassoword />}/>
+        <Route path="forgot-Passoword" element={<ForgotPassoword />}/>
         <Route path="Offers" element={<Offers />}/>
         <Route path="Signup" element={<Signup />}/>
         <Route path="Signin" element={<Signin />}/>
