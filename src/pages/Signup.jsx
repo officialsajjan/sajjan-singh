@@ -3,9 +3,75 @@ import { useState } from "react";
 import { AiFillEyeInvisible,AiFillEye } from "react-icons/ai";
 import { Link } from 'react-router-dom';
 import Button from '../components/Button';
+import {db} from '../Firebase'
+import {getAuth,createUserWithEmailAndPassword, updateProfile} from "firebase/auth";
+import { async } from '@firebase/util';
+import { serverTimestamp } from 'firebase/firestore';
+import { setDoc,doc } from 'firebase/firestore';
+import { toast, ToastContainer } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
+
 
 export default function Singup() {
   const [showPassword,setshowPassword]=useState(false)
+  const [name,setName]=useState('')
+  const [email,setEmail]=useState('')
+  const [password,setPassword]=useState('')
+  const navigate=useNavigate()
+
+  async function onSubmit(e){
+    e.preventDefault()
+
+    try{
+      const auth=getAuth();
+      if(name===''){
+        throw {code:'auth/no-name'}
+      }
+      const userCredentail=await createUserWithEmailAndPassword(auth,email,password)
+      console.log(userCredentail)
+      const user= userCredentail.user
+      updateProfile( user, { displayName:name
+      })
+      const userDetails={
+        'name':name,
+        'email':email,
+        'timestamp':serverTimestamp()
+      }
+      await setDoc(doc(db,"users", user.uid), userDetails)
+      toast.success("login success")
+      navigate('/')
+      
+
+    }catch(error){
+      console.log("Error"+error)
+      const wrong=displayError(error.code)
+      toast.error(wrong)
+    }
+  }
+  function displayError(code){
+    switch(code){
+      case "auth/email-already-in-use":
+       return 'email invalid'
+
+      case 'auth/weak-password':
+        return "invalid password at least 6 "
+      
+
+      case 'auth/no-name':
+        return "no name"
+      
+
+      default:
+        return "something went wrong"
+
+    }
+  }
+  function demo(e){
+    console.log(e.target.value)
+  }
+
+
+
   return (
     <>
       <section>
@@ -19,15 +85,17 @@ export default function Singup() {
 
           </div>
           <div className=' mx-auto md:mt-6 lg:w-[40%] lg:ml-20 md:w-[67%] mt-7'>
-            <form>
+            <form onSubmit={onSubmit}>
             <input 
                className='rounded-[12px] py-6 px-6 border-2 w-full rounded-md h-8 focus:border-blue-300 focus:outline-none' 
                placeholder='Name'
+               onChange={(e)=>setName(e.target.value)}
               >
               </input>
               <input 
                className='rounded-[12px] py-6 px-6 border-2 w-full rounded-md h-8 focus:border-blue-300 focus:outline-none' 
                placeholder='Email Address'
+               onChange={(e)=>setEmail(e.target.value)}
               >
               </input>
             <div className=' my-6 relative'>
@@ -35,6 +103,8 @@ export default function Singup() {
               className='focus:border-blue-300 focus:outline-none mt-7 rounded-[12px] 
               py-6 px-6 w-full rounded-md h-8' 
               placeholder='Password'
+              onChange={(e)=>setPassword(e.target.value)}
+
               />
               {showPassword?(
               <AiFillEye className='cursor-pointer absolute right-4 top-[40px]'
