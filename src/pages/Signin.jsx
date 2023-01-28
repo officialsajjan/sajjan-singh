@@ -2,11 +2,34 @@ import React from 'react'
 import { useState } from "react";
 import { AiFillEyeInvisible,AiFillEye } from "react-icons/ai";
 import { Link } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import Button from '../components/Button';
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import { async } from '@firebase/util';
+import { useNavigation } from 'react-router-dom';
 
 
 export default function Singin() {
   const [showPassword,setshowPassword]=useState(false)
+  const[email,setEmail]=useState('')
+  const[password,setPassword]=useState('')
+
+  async function onSubmit(e){
+    e.preventDefault()
+    try {
+      const auth = getAuth();
+      console.log(email)
+      console.log(password)
+      const result=await signInWithEmailAndPassword(auth, email, password)
+      const user= result.user
+      toast.success('valid Id')
+      
+      
+    } catch (error) {
+      toast.error('invalid creadential')
+      
+    }
+  }
   return (
     <>
       <section>
@@ -20,10 +43,11 @@ export default function Singin() {
 
           </div>
           <div className=' mx-auto md:mt-6 lg:w-[40%] lg:ml-20 md:w-[67%] mt-7'>
-            <form>
+            <form onSubmit={onSubmit}>
               <input 
                className='rounded-[12px] py-6 px-6 border-2 w-full rounded-md h-8 focus:border-blue-300 focus:outline-none' 
                placeholder='Email Address'
+               onChange={(e)=>setEmail(e.target.value)}
               >
               </input>
             <div className=' my-6 relative'>
@@ -31,6 +55,7 @@ export default function Singin() {
               className='focus:border-blue-300 focus:outline-none mt-7 rounded-[12px] 
               py-6 px-6 w-full rounded-md h-8' 
               placeholder='Password'
+              onChange={(e)=>setPassword(e.target.value)}
               />
               {showPassword?(
               <AiFillEye className='cursor-pointer absolute right-4 top-[40px]'
@@ -55,7 +80,7 @@ export default function Singin() {
             after:border-t after:flex-1 after:border-gray-500'>
               <p className='font-bold mx-3'>or</p>
             </div>
-           <Button title='continue with google' back=' bg-red-500' pic='fcgoogle'/>
+           <Button type="button"click={true} title='continue with google' back=' bg-red-500' pic='fcgoogle'/>
 
             </form>
 

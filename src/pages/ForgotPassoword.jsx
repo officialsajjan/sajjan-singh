@@ -1,11 +1,26 @@
 import React from 'react'
 import { useState } from "react";
 import { AiFillEyeInvisible,AiFillEye } from "react-icons/ai";
-import { Link } from 'react-router-dom';
+import { Await, Link } from 'react-router-dom';
 import Button from '../components/Button';
+import { getAuth, sendPasswordResetEmail } from "firebase/auth";
+import { toast } from 'react-toastify';
+import { async } from '@firebase/util';
 
 export default function ForgotPassoword() {
-  const [showPassword,setshowPassword]=useState(false)
+  const [email,setEmail]=useState('')
+  async function onsubmit(e){
+    e.preventDefault(e)
+    try {
+      const auth = getAuth();
+     await sendPasswordResetEmail(auth, email)
+      toast.success('reset confirm')
+      
+    } catch (error) {
+      toast.error('invalid mail')
+      
+    }
+  }
   return (
     <>
       <section>
@@ -19,10 +34,11 @@ export default function ForgotPassoword() {
 
           </div>
           <div className=' mx-auto md:mt-6 lg:w-[40%] lg:ml-20 md:w-[67%] mt-7'>
-            <form>
+            <form onSubmit={onsubmit}>
               <input 
                className='rounded-[12px] py-6 px-6 border-2 w-full rounded-md h-8 focus:border-blue-300 focus:outline-none' 
                placeholder='Email Address'
+               onChange={(e)=>setEmail(e.target.value)}
               >
               </input>
             <div className=' my-6 relative'>
@@ -42,6 +58,7 @@ export default function ForgotPassoword() {
               <p className='font-bold mx-3'>or</p>
             </div>
            <Button title='continue with google' back=' bg-red-500' pic='fcgoogle'/>
+           <Button type="button"click={true} title='continue with google' back=' bg-red-500' pic='fcgoogle'/>
 
             </form>
 

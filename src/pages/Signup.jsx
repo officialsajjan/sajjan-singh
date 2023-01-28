@@ -128,6 +128,7 @@ export default function Singup() {
             after:border-t after:flex-1 after:border-gray-500'>
               <p className='font-bold mx-3'>or</p>
             </div>
+            <Button type="button"click={true} title='continue with google' back=' bg-red-500' pic='fcgoogle'/>
 
             </form>
 
