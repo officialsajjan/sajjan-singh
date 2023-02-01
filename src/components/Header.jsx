@@ -1,9 +1,28 @@
+import { getAuth } from 'firebase/auth'
 import React from 'react'
+import { useEffect } from 'react'
+import { useState } from 'react'
 import {useLocation,useNavigate} from 'react-router-dom'
+import {onAuthStateChanged} from  'firebase/auth'
 
 export default function Header() {
   const location= useLocation()
   const navigate=useNavigate()
+
+  const [title,setTitle]=useState('signin')
+  useEffect(()=>{
+    const auth=getAuth()
+    onAuthStateChanged(auth,(user)=>{
+        if(user){
+          setTitle('Profile')
+        }
+        else{
+          setTitle('Signin')
+        }
+    
+      })
+},[])
+
   function show(route){
     if(route==location.pathname){
       return true
@@ -16,7 +35,7 @@ export default function Header() {
             <img src="https://b2bweb.realtor.com/web_assets/rdc/SFMC-lp-images/2021/RDC%20-tagline-wide.png"
             alt='ReactApp'
             className='h-5 cursor-pointer'
-            onClick={ ()=>navigate('/')}
+            onClick={ ()=>navigate('/profile')}
           
             />
 
@@ -43,10 +62,11 @@ export default function Header() {
                 className={`py-3 text-slate-500 text-sm font-semibold border-b-[3px] cursor-pointer
                 border-b-transparent ${show('/Signin') && 'text-black border-b-red-600'}
                 `}
-                onClick={ ()=>navigate('/Signin')}
+                onClick={ ()=>navigate('/profile')}
                 >
-
-                  Signin</li>
+                {title}
+                  </li>
+                 
                 
             </ul>
         </div>

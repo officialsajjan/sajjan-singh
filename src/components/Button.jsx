@@ -18,12 +18,12 @@ export default function Button({title,back,pic,type,click}) {
       const user=result.user
       toast.success('valid email ')
       navigate('/')
-      const docSpan= await getDoc(doc(db,"users",user.id));
+      const docSpan= await getDoc(doc(db,"users",user.uid));
 
       if(!docSpan.exists()){
-        await setDoc(doc(db,"users",user.id),{
+        await setDoc(doc(db,"users",user.uid),{
           email:user.email,
-          name:user.name,
+          name:user.displayName,
           timestamp:serverTimestamp()
         })
       }
