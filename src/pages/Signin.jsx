@@ -1,18 +1,51 @@
 import React from 'react'
+import { FcGoogle } from 'react-icons/fc';
 import { useState } from "react";
 import { AiFillEyeInvisible,AiFillEye } from "react-icons/ai";
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import Button from '../components/Button';
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import { signInWithEmailAndPassword } from "firebase/auth";
 import { async } from '@firebase/util';
 import { useNavigation } from 'react-router-dom';
+import { serverTimestamp } from 'firebase/firestore';
+import { db } from '../Firebase';
+import { getDoc,setDoc,doc } from 'firebase/firestore';
+import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 
 
-export default function Singin() {
+
+export default function  Singin() {
   const [showPassword,setshowPassword]=useState(false)
   const[email,setEmail]=useState('')
   const[password,setPassword]=useState('')
+  const navigate=useNavigate()
+
+
+  async function Auth(){
+    try {
+      const auth = getAuth();
+      const provider = new GoogleAuthProvider();
+      const result=await signInWithPopup(auth, provider)
+      const user=result.user
+      toast.success('valid email ')
+      navigate('/')
+      const docSpan= await getDoc(doc(db,"users",user.uid));
+
+      if(!docSpan.exists()){
+        await setDoc(doc(db,"users",user.uid),{
+          email:user.email,
+          name:user.displayName,
+          timestamp:serverTimestamp()
+        })
+      }
+      
+    } catch (error) {
+      toast.error('somthing is wrong')
+      
+    }
+
+  }
 
   async function onSubmit(e){
     e.preventDefault()
@@ -80,7 +113,7 @@ export default function Singin() {
             after:border-t after:flex-1 after:border-gray-500'>
               <p className='font-bold mx-3'>or</p>
             </div>
-           <Button type="button"click={true} title='continue with google' back=' bg-red-500' pic='fcgoogle'/>
+           <Button type="button" onClick={Auth} title='continue with google' back=' bg-red-500' pic={FcGoogle}/>
 
             </form>
 

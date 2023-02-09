@@ -7,7 +7,9 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router'
 import { toast } from 'react-toastify'
 import Button from '../components/Button'
+import { FcHome } from 'react-icons/fc'
 import { db} from '../Firebase'
+import { Link } from 'react-router-dom'
 
 
 export default function Profile() {
@@ -70,7 +72,11 @@ export default function Profile() {
     </p>
     <p onClick={signOut} className='cursor-pointer text-blue-500'>Signout</p>
     </div>
-    <Button type="button"click={true} title='Sigin' back=' bg-red-500'/>
+    <Link to='/Createlister' >
+    <Button type="button" title='sell and rent' pic={FcHome} back=' bg-blue-500'/>
+
+    </Link>
+
 
    </div>
    </div>

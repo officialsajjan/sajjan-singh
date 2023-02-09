@@ -4,12 +4,13 @@ import { AiFillEyeInvisible,AiFillEye } from "react-icons/ai";
 import { Link } from 'react-router-dom';
 import Button from '../components/Button';
 import {db} from '../Firebase'
-import {getAuth,createUserWithEmailAndPassword, updateProfile} from "firebase/auth";
+import {createUserWithEmailAndPassword, updateProfile} from "firebase/auth";
 import { async } from '@firebase/util';
 import { serverTimestamp } from 'firebase/firestore';
-import { setDoc,doc } from 'firebase/firestore';
+import { setDoc,doc,getDoc } from 'firebase/firestore';
 import { toast, ToastContainer } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
+import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 
 
 export default function Singup() {
@@ -18,6 +19,33 @@ export default function Singup() {
   const [email,setEmail]=useState('')
   const [password,setPassword]=useState('')
   const navigate=useNavigate()
+
+
+  async function Auth(){
+    try {
+      const auth = getAuth();
+      const provider = new GoogleAuthProvider();
+      const result=await signInWithPopup(auth, provider)
+      const user=result.user
+      toast.success('valid email ')
+      navigate('/')
+      const docSpan= await getDoc(doc(db,"users",user.uid));
+
+      if(!docSpan.exists()){
+        await setDoc(doc(db,"users",user.uid),{
+          email:user.email,
+          name:user.displayName,
+          timestamp:serverTimestamp()
+        })
+      }
+      
+    } catch (error) {
+      toast.error('somthing is wrong')
+      
+    }
+
+  }
+
 
   async function onSubmit(e){
     e.preventDefault()
@@ -128,7 +156,7 @@ export default function Singup() {
             after:border-t after:flex-1 after:border-gray-500'>
               <p className='font-bold mx-3'>or</p>
             </div>
-            <Button type="button"click={true} title='continue with google' back=' bg-red-500' pic='fcgoogle'/>
+            <Button type="button" onClick={Auth} title='continue with google' back=' bg-red-500' pic='fcgoogle'/>
 
             </form>
 

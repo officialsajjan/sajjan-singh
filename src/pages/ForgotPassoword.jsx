@@ -1,14 +1,46 @@
 import React from 'react'
 import { useState } from "react";
 import { AiFillEyeInvisible,AiFillEye } from "react-icons/ai";
-import { Await, Link } from 'react-router-dom';
+import { Await, Link, useNavigate } from 'react-router-dom';
 import Button from '../components/Button';
 import { getAuth, sendPasswordResetEmail } from "firebase/auth";
 import { toast } from 'react-toastify';
 import { async } from '@firebase/util';
+import { useNavigation } from 'react-router-dom';
+import { serverTimestamp } from 'firebase/firestore';
+import { db } from '../Firebase';
+import { getDoc,setDoc,doc } from 'firebase/firestore';
+import {  signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 
 export default function ForgotPassoword() {
   const [email,setEmail]=useState('')
+  const navigate=useNavigate()
+
+  async function Auth(){
+    try {
+      const auth = getAuth();
+      const provider = new GoogleAuthProvider();
+      const result=await signInWithPopup(auth, provider)
+      const user=result.user
+      toast.success('valid email ')
+      navigate('/')
+      const docSpan= await getDoc(doc(db,"users",user.uid));
+
+      if(!docSpan.exists()){
+        await setDoc(doc(db,"users",user.uid),{
+          email:user.email,
+          name:user.displayName,
+          timestamp:serverTimestamp()
+        })
+      }
+      
+    } catch (error) {
+      toast.error('somthing is wrong')
+      
+    }
+
+  }
+
   async function onsubmit(e){
     e.preventDefault(e)
     try {
@@ -58,7 +90,7 @@ export default function ForgotPassoword() {
               <p className='font-bold mx-3'>or</p>
             </div>
            <Button title='continue with google' back=' bg-red-500' pic='fcgoogle'/>
-           <Button type="button"click={true} title='continue with google' back=' bg-red-500' pic='fcgoogle'/>
+           <Button type="button" onClick={Auth} title='continue with google' back=' bg-red-500' pic='fcgoogle'/>
 
             </form>
 
